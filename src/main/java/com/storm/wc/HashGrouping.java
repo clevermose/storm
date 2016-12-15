@@ -1,7 +1,7 @@
 package com.storm.wc;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import backtype.storm.generated.GlobalStreamId;
@@ -18,26 +18,19 @@ public class HashGrouping implements CustomStreamGrouping, Serializable {
     private static final long serialVersionUID = 1L;
     
     //bolt中执行任务的个数
-    private int taskNums = 0;
+    private List<Integer> targetTasks = null;
     
     @Override
     public List<Integer> chooseTasks(int arg0, List<Object> values) {
-        
-        ArrayList<Integer> boltIds = new ArrayList<>(values.size());
-        
-        for (Object value : values) {
-            //依据value的hash值,进行分发
-            int index = value.hashCode() % taskNums;
-            boltIds.add(index);
-        }
-        
-        return boltIds;
+        String value = values.get(0).toString();
+        int index = value.hashCode() % this.targetTasks.size();
+        return Arrays.asList(targetTasks.get(index));
     }
 
     @Override
     public void prepare(WorkerTopologyContext workerTopologyContext, GlobalStreamId globalStreamId,
             List<Integer> targetTasks) {
-        taskNums = targetTasks.size();
+        this.targetTasks = targetTasks;
     }
 
 }

@@ -55,6 +55,8 @@ public class WordCountSumBolt implements IRichBolt {
         
         String word = tuple.getString(0);
         
+        System.err.println("thread name : " + Thread.currentThread().getName() + " ,word : " + word);
+        
         if(this.wordCount.containsKey(word)) {
             int wordCnt = this.wordCount.get(word);
             this.wordCount.put(word, wordCnt + 1);

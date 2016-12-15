@@ -70,6 +70,7 @@ public class WordCountSpout implements IRichSpout {
         String line = null;
         try {
             while(null!=(line=br.readLine())) {
+                System.err.println("thread name : " + Thread.currentThread().getName() + " ,send line content : " + line);
                 collector.emit(new Values(line), line);
             }
         } catch (IOException e) {
